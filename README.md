@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # **aequchain** — Universal Equidistributed Blockchain
 [![Julia](https://img.shields.io/badge/Julia-1.8+-blue.svg)](https://julialang.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -339,3 +340,21 @@ The current implementation is feature-complete for demonstrating the revolutiona
 
 ****aequchain** represents more than code - it's a mathematical proof that a different economic reality is possible.** One where equality is guaranteed, cooperation replaces competition, financial stress becomes historical, and the system naturally optimizes toward increasing freedom and abundance for all.
 *Join the exploration of what becomes possible when everyone has equal economic footing and the market guides us toward collective optimization.*
+=======
+## Hi there 👋
+
+<!--
+**aequchain/aequchain** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+
+Here are some ideas to get you started:
+
+- 🔭 I’m currently working on ...
+- 🌱 I’m currently learning ...
+- 👯 I’m looking to collaborate on ...
+- 🤔 I’m looking for help with ...
+- 💬 Ask me about ...
+- 📫 How to reach me: ...
+- 😄 Pronouns: ...
+- ⚡ Fun fact: ...
+-->
+>>>>>>> origin/main
