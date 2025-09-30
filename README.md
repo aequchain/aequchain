@@ -231,7 +231,7 @@ See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a
 
 - **Julia Language**: High-performance technical computing with mathematical precision
 - `Rational{BigInt}`: Exact arithmetic avoiding floating-point errors
-- **SHA-256 Hashing**: Secure blockchain integrity - 
+- **SHA-256 Hashing**: Secure blockchain integrity [should ensure all cryptographic operations are secure, keys are managed safely, and consensus is robust before put into production use]
 - **Lightweight Design**: Efficient enough for global scale deployment
 - **Demo Mode Safe**: No persistence - perfect for experimentation
 
