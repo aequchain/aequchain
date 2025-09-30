@@ -1,4 +1,7 @@
 # **aequchain**
+
+[should be fully audited, tested, and hardened *before put into production use*]
+
 ## *Universal Equidistributed Blockchain*
 [![Julia](https://img.shields.io/badge/Julia-1.8+-blue.svg)](https://julialang.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -12,6 +15,8 @@
 **status:** *safe for testing* testable testnet. demo's and examples. ephemeral. non-persisting. [nothing writes to blockchain permanently, close or reset and everything is cleared]
 
 ## **≡**  Revolutionary Capabilities
+
+[should be security audited, have persistent storage, and undergo formal testing *before put into production use*]
 
 **aequchain** achieves what was previously thought impossible:
 - **Multi-Nation & Multi-Network Support**: Hosts multiple countries and business networks with their own denominations
@@ -41,12 +46,16 @@ This implementation demonstrates how multiple sovereign networks with independen
 
 ### Mathematical Precision & Safety
 
+[should be formally verified and penetration tested *before put into production use*]
+
 - **Exact Monetary Precision**: Uses `Rational{BigInt}` for perfect arithmetic without floating-point errors
 - **100% Equality Guarantee**: Every member's value = Total Treasury / Total Members (always equal)
 - **30-Day Safety Limits**: Prevents treasury depletion with intelligent spending controls
 - **Non-Transferable Member Coins**: Maintains perfect equality through automatic rebalancing
 
 ### Advanced Economic Mechanisms
+
+[should have full automated test coverage and continuous integration *before put into production use*]
 
 - **Enterprise Contribution System**: Businesses can set contribution rates (0-5%) for operational costs
 - **Pledge Funding**: Both member and business pledges for special funding needs
@@ -178,6 +187,9 @@ EUR_Value = Member_Value * 0.85     # Euro network
     - Experience internal free trade (transfers that maintain equality)
 
 ### **δ** Ephemeral Testnet Walkthrough (No Persistence)
+
+[should have secure, environment-specific configuration *before put into deployed Testnet*]
+
 Everything in demo mode lives only in memory—when you exit the CLI, the blockchain vanishes. Try the in-memory consensus pipeline in about a minute:
 ```bash
 julia --startup-file=no **aequchain**.jl cli
@@ -219,7 +231,7 @@ See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a
 
 - **Julia Language**: High-performance technical computing with mathematical precision
 - `Rational{BigInt}`: Exact arithmetic avoiding floating-point errors
-- **SHA-256 Hashing**: Secure blockchain integrity
+- **SHA-256 Hashing**: Secure blockchain integrity - 
 - **Lightweight Design**: Efficient enough for global scale deployment
 - **Demo Mode Safe**: No persistence - perfect for experimentation
 
