@@ -348,7 +348,7 @@ end
 function validate_spend(member_id::String, amount::Rational{BigInt}, typ::String)
     allowance = get_spend_allowance(member_id)
     if amount > allowance
-        error("🛡️ Limit exceeded: $amount > $allowance (30-day)")
+    error("Limit exceeded: $amount > $allowance (30-day)")
     end
     return true
 end
@@ -735,7 +735,7 @@ function support_pledge(pledge_id::String, amount::Float64, supporter::String)
     end
     # Simulate recurring (demo only; real would schedule)
     if pledge.recurring && !pledge.completed
-        println("📅 Recurring: Would auto-add $(pledge.monthly_amount) next month if unmet")
+    println("Recurring: Would auto-add $(pledge.monthly_amount) next month if unmet")
     end
     
     data = Dict("pledge_id" => pledge_id, "amount" => amt_rat, "supporter" => supporter, "current" => pledge.current)
@@ -760,7 +760,7 @@ function process_recurring_pledges()
                 auto_amount = months_passed * pledge.monthly_amount
                 if can_business_afford(pledge.creator, auto_amount)
                     support_pledge(pledge.id, Float64(auto_amount), pledge.creator)
-                    println("📅 Auto-added recurring pledge: $auto_amount for $(pledge.name)")
+                    println("Auto-added recurring pledge: $auto_amount for $(pledge.name)")
                 else
                     println("⚠️ Insufficient funds for recurring pledge: $(pledge.name)")
                 end
@@ -1226,7 +1226,7 @@ function show_pledges()
 
     for pledge in values(BLOCKCHAIN.pledges)
         type = pledge.is_business ? "Business" : "Member"
-        status = pledge.completed ? "✅ Completed" : "🔄 Active"
+    status = pledge.completed ? "Completed" : "Active"
         recurring = pledge.recurring ? " (recurring)" : ""
         progress = Float64(pledge.current) / Float64(pledge.target) * 100
         progress_bar = "[" * repeat("█", round(Int, progress/10)) * repeat("░", 10-round(Int, progress/10)) * "]"

@@ -11,13 +11,7 @@
 
 **status:** *safe for testing* testable testnet. demo's and examples. ephemeral. non-persisting. [nothing writes to blockchain permanently, close or reset and everything is cleared]
 
-<<<<<<< HEAD
-## **≡** Revolutionary Capabilities
-
-## **≡** Revolutionary Implications
-=======
-## 🌍 Revolutionary Capabilities
->>>>>>> origin/main
+## **≡**  Revolutionary Capabilities
 
 **aequchain** achieves what was previously thought impossible:
 - **Multi-Nation & Multi-Network Support**: Hosts multiple countries and business networks with their own denominations
