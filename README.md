@@ -1,4 +1,5 @@
-# **aequchain** — Universal Equidistributed Blockchain
+# **aequchain**
+## *Universal Equidistributed Blockchain*
 [![Julia](https://img.shields.io/badge/Julia-1.8+-blue.svg)](https://julialang.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Economy](https://img.shields.io/badge/Economy-100%25_Equal-purple.svg)](#)
@@ -8,7 +9,11 @@
 
 ****aequchain**** is a "break"through implementation of a **Universal Equidistributed Blockchain** that enables multiple nations, multiple business networks, and their own currencies to coexist on a single blockchain while maintaining **100% financial equality** for every member. It scales from local cooperatives to full global currency coverage, all while keeping participation free for real people. The project deliberately steers communities toward a **living-for-free reality**—see [`files/docs/vision/free-living.md`](files/docs/vision/free-living.md) for the technical pathway from equality to complete freedom from monetary dependence.
 
-## 🌍 Revolutionary Capabilities
+**status:** *safe for testing* testable testnet. demo's and examples. ephemeral. non-persisting. [nothing writes to blockchain permanently, close or reset and everything is cleared]
+
+## **≡** Revolutionary Capabilities
+
+## **≡** Revolutionary Implications
 
 **aequchain** achieves what was previously thought impossible:
 - **Multi-Nation & Multi-Network Support**: Hosts multiple countries and business networks with their own denominations
@@ -17,7 +22,7 @@
 - **Internal Free Trade**: Enables transactions where money circulates but balances remain exactly equal
 - **Poverty Elimination**: Provides a foundation for universal base income systems
 
-## 🎯 Key Breakthrough Features
+## **=** Key Breakthrough Features
 
 ### Global Economic Integration
 
@@ -26,7 +31,7 @@
 - **Seamless Cross-Network Value**: Members can belong to multiple networks while maintaining equal value
 - **Automatic Peg Management**: Exchange rates are mathematically maintained across all networks
 
-### 🌐 Use Cases
+### **∼** Use Cases
 
 - **International Commerce**: Trade between nations with different currencies while maintaining equality
 - **Multi-National Organizations**: Businesses operating across multiple countries/currencies
@@ -50,7 +55,7 @@ This implementation demonstrates how multiple sovereign networks with independen
 - **Recurring Business Pledges**: Automated funding for ongoing business operations
 - **Production Chain Tracking**: Foundation for internalized production leading to free products
 
-## 🔄 The Potential for Complete Economic Freedom
+## **∝** The Potential for Complete Economic Freedom
 *possibilities this system can facilitate and on blockchain*
 
 ### Natural Market Signals & Self-Optimization
@@ -113,7 +118,7 @@ end
 
 This creates an **economic evolution engine** that starts working immediately with real-world constraints and naturally progresses toward complete internalization and free access to goods and services.
 
-## 🚀 Purpose & Vision
+## **≡** Purpose & Vision
 
 **aequchain** demonstrates a new economic paradigm where:
 - Financial equality is mathematically guaranteed
@@ -132,7 +137,7 @@ This creates an **economic evolution engine** that starts working immediately wi
 - **Business Efficiency**: Reduces operational costs by eliminating internal financial transactions
 - **Natural Optimization**: Market signals guide efficient resource allocation without central planning
 
-## 💡 How It Works: The Equality Engine
+## **≡** How It Works: The Equality Engine
 
 ### Core Principle:
 ```
@@ -150,7 +155,7 @@ ZAR_Value = Member_Value * 17.35    # South African Rand network
 EUR_Value = Member_Value * 0.85     # Euro network
 ```
 
-## ⚡ Quick Start
+## **≈** Quick Start
 
 1. **Clone the repository:**
    ```bash
@@ -174,7 +179,7 @@ EUR_Value = Member_Value * 0.85     # Euro network
     - Establish businesses with contribution systems (`create_business`)
     - Experience internal free trade (transfers that maintain equality)
 
-### 🧪 Ephemeral Testnet Walkthrough (No Persistence)
+### **δ** Ephemeral Testnet Walkthrough (No Persistence)
 Everything in demo mode lives only in memory—when you exit the CLI, the blockchain vanishes. Try the in-memory consensus pipeline in about a minute:
 ```bash
 julia --startup-file=no **aequchain**.jl cli
@@ -195,7 +200,7 @@ node_status               # shows latency, throughput, and memory headroom
 
 See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a complete step-by-step guide, troubleshooting tips, and advice on recording experiment metrics.
 
-## 🏗️ Core Architecture
+## **≡** Core Architecture
 
 ### Global Economic Structures
 
@@ -212,7 +217,7 @@ See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a
 - **Every Member Validates**: Democratic transaction verification
 - **Transparent Blockchain**: All operations are publicly auditable
 
-## 🔬 Technical Excellence
+## **ε** Technical Excellence
 
 - **Julia Language**: High-performance technical computing with mathematical precision
 - `Rational{BigInt}`: Exact arithmetic avoiding floating-point errors
@@ -220,7 +225,7 @@ See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a
 - **Lightweight Design**: Efficient enough for global scale deployment
 - **Demo Mode Safe**: No persistence - perfect for experimentation
 
-## 🌟 Revolutionary Implications
+## **≡** Revolutionary Implications
 
 ### For Nations:
 
@@ -246,7 +251,7 @@ See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a
 - Participation in transparent, corruption-resistant systems
 - Witness continuous improvement in quality of life as the system optimizes
 
-## 📋 Demo Features
+## **=** Demo Features
 
 The `run_demo()` function demonstrates:
 
@@ -259,7 +264,7 @@ The `run_demo()` function demonstrates:
 - **Pledge mechanisms** for both personal and business needs
 - **Internal free trade** where transactions maintain perfect equality
 
-## 🔮 Future Potential & Extensions
+## **∼** Future Potential & Extensions
 
 ### Potential Code Additions Under Consideration:
 #### Production Chain Tracking
@@ -302,7 +307,7 @@ end
 
 These extensions would operationalize the vision of a self-optimizing economic system that naturally progresses toward complete freedom and abundance.
 
-## ♻️ Sustainable Resource Management
+## **∝** Sustainable Resource Management
 
 The ultimate goal requires **Sustainable, Renewable and Recyclable Resource Management** for "infinite freedom". The economic framework provides the foundation, but true long-term sustainability depends on responsible resource stewardship:
 - **Renewable Energy**: Transition to 100% sustainable energy sources
@@ -311,18 +316,18 @@ The ultimate goal requires **Sustainable, Renewable and Recyclable Resource Mana
 - **Resource Conservation**: Efficient use of finite resources
 - **Ecosystem Preservation**: Maintaining biodiversity and natural balance
 
-## ⚠️ Important Notes
+## **≠** Important Notes
 
 - **DEMO_MODE = true**: Currently configured for safe testing without persistence
 - **Research Implementation**: Not for production use without proper security implementation
 - **Mathematical Proof-of-Concept**: Demonstrates economic principles with exact mathematics
 - **Transparency Focus**: All operations are mathematically verifiable
 
-## 📄 License
+## **=** License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## **∀** Acknowledgments
 
 - Inspired by principles of universal economic equality
 - Built with Julia for mathematical precision and performance
@@ -330,7 +335,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ---
 
-## 💭 Developer Notes
+## **∼** Developer Notes
 
 The code examples shown in the "Future Potential" section represent conceptual extensions that could build upon the current solid foundation. The core **aequchain**.jl implementation provides the complete mathematical framework for multi-network equality - these extensions would operationalize the vision of automatic economic optimization and progressive freedom achievement.
 The current implementation is feature-complete for demonstrating the revolutionary economic principles. Future extensions would focus on making the self-optimization mechanisms explicit and measurable.
