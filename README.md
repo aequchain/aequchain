@@ -1,7 +1,5 @@
 # **aequchain**
 
-[should be fully audited, tested, and hardened *before put into production use*]
-
 ## *Universal Equidistributed Blockchain*
 [![Julia](https://img.shields.io/badge/Julia-1.8+-blue.svg)](https://julialang.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -13,6 +11,8 @@
 **aequchain** is a revelation in the implementation of a **Universal Equidistributed Blockchain** that enables multiple nations, multiple business networks, and their own currencies to coexist on a single blockchain while maintaining **100% financial equality** for every member. It scales from local cooperatives to full global currency coverage, all while keeping participation free for real people. The project deliberately steers communities toward a **living-for-free reality**—see [`files/docs/vision/free-living.md`](files/docs/vision/free-living.md) for the technical pathway from equality to complete freedom from monetary dependence.
 
 **status:** *safe for testing* testable testnet. demo's and examples. ephemeral. non-persisting. [nothing writes to blockchain permanently, close or reset and everything is cleared]
+
+[should be fully audited, tested, and hardened *before put into production use*]
 
 ## **≡**  Revolutionary Capabilities
 
