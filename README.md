@@ -180,6 +180,11 @@ EUR_Value = Member_Value * 0.85     # Euro network
     julia **aequchain**.jl demo
     ```
 
+    ```bash
+    # Launch the CLI explicitly
+    julia **aequchain**.jl cli
+    ```
+
 3. **Explore the economic revolution:**
     - Initialize the treasury (`init_treasury`)
     - Join members with equal deposits (`join_member`)
@@ -208,6 +213,13 @@ node_status               # shows latency, throughput, and memory headroom
 - `node_metrics [mem_gb]` provides a longer report and lets you add a custom memory target (for example `node_metrics 12`).
 - `node_blocks` and `node_qc` print the most recent canonical block JSON and quorum certificates if you need to inspect hashes.
 - Forget to register an account? `node_pay` now hints which ID is missing; just run `node_register <id> [balance]` and retry.
+- Want to verify the consensus primitives quickly? From the CLI prompt run:
+
+    ```text
+    consensus_test
+    ```
+
+    This deterministic self-test exercises committee selection, quorum aggregation, duplicate vote handling, insufficient vote rejection, and conflicting-hash detection, printing a ✅/❌ summary while keeping the environment entirely ephemeral.
 
 See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a complete step-by-step guide, troubleshooting tips, and advice on recording experiment metrics.
 

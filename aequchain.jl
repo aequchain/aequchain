@@ -973,6 +973,7 @@ function help_content_paginated()
             println("  $(ACCENT)node_metrics [mem_gb]$(RESET)          $(BODY)- latency, throughput & memory report$(RESET)")
             println("  $(ACCENT)node_blocks [n]$(RESET)                $(BODY)- inspect latest canonical blocks$(RESET)")
             println("  $(ACCENT)node_qc [n]$(RESET)                    $(BODY)- show recent quorum certificates$(RESET)")
+            println("  $(ACCENT)consensus_test$(RESET)                 $(BODY)- run deterministic consensus self-test$(RESET)")
             println("  $(ACCENT)node_reset$(RESET)                     $(BODY)- clear node state$(RESET)")
         end,
         () -> begin
@@ -1054,6 +1055,7 @@ function help_content()
     println("  $(ACCENT)node_metrics [mem_gb]$(RESET)          $(BODY)- latency, throughput & memory report$(RESET)")
     println("  $(ACCENT)node_blocks [n]$(RESET)                $(BODY)- inspect latest canonical blocks$(RESET)")
     println("  $(ACCENT)node_qc [n]$(RESET)                    $(BODY)- show recent quorum certificates$(RESET)")
+    println("  $(ACCENT)consensus_test$(RESET)                 $(BODY)- run deterministic consensus self-test$(RESET)")
     println("  $(ACCENT)node_reset$(RESET)                     $(BODY)- clear node state$(RESET)")
 
     println("\n$(ACCENT)SYSTEM$(RESET)")
@@ -1910,6 +1912,86 @@ function handle_node_quorum(args::Vector{String})
     end
 end
 
+function handle_consensus_test(_args::Vector{String})
+    try
+        members = ["validator_$(i)" for i in 1:16]
+        committee1, idx1 = select_committee(members; committee_size=8, epoch=UInt64(5), account="alice", seq=UInt64(10))
+        committee2, idx2 = select_committee(members; committee_size=8, epoch=UInt64(5), account="alice", seq=UInt64(10))
+        deterministic_pass = committee1.members == committee2.members && committee1.id == committee2.id && idx1 == idx2
+        deterministic_detail = deterministic_pass ? string("committee id ", committee1.id, " | first 4 members: ", join(committee1.members[1:min(4, length(committee1.members))], ", ")) : "Expected identical committee selection for same seed"
+
+        small_committee, small_idx = select_committee(["a", "b"]; committee_size=4, epoch=UInt64(1), account="seed", seq=UInt64(0))
+        small_order_ok = all(small_idx[member] == position for (position, member) in enumerate(small_committee.members))
+        small_pass = length(small_committee.members) == 2 && Set(keys(small_idx)) == Set(small_committee.members) && small_order_ok
+    bitmap_indices = join((string(small_idx[m]) for m in small_committee.members), ", ")
+    small_detail = string("members: ", join(small_committee.members, ", "), " | bitmap indices: ", bitmap_indices)
+
+        committee = AequChain.Types.Committee(0, "cid", ["v1", "v2", "v3", "v4"])
+        block_hash = fill(UInt8(0x42), 32)
+        votes = AequChain.Types.PartialVote[
+            AequChain.Types.PartialVote(block_hash, committee.epoch, committee.id, committee.members[i], i, fill(UInt8(i), 8))
+            for i in 1:3
+        ]
+        qc = aggregate_qc(votes, committee, 3)
+        qc_votes = qc === nothing ? 0 : sum(qc.bitmap)
+        qc_pass = qc !== nothing && qc.block_hash == block_hash && qc_votes == 3 && qc.threshold == 3 && length(qc.agg_sig) == 24
+        qc_detail = qc_pass ? @sprintf("votes %d/%d (threshold %d)", qc_votes, length(qc.bitmap), qc.threshold) : "Expected quorum certificate with 3 votes"
+
+        duplicate_vote = AequChain.Types.PartialVote(block_hash, committee.epoch, committee.id, committee.members[1], 1, fill(UInt8(0xFF), 8))
+        qc_with_duplicate = aggregate_qc(vcat(votes, [duplicate_vote]), committee, 3)
+        dup_votes = qc_with_duplicate === nothing ? 0 : sum(qc_with_duplicate.bitmap)
+        duplicate_pass = qc_with_duplicate !== nothing && dup_votes == 3 && qc_with_duplicate.agg_sig == qc.agg_sig
+        duplicate_detail = duplicate_pass ? "Duplicate vote ignored; signature unchanged" : "Expected duplicate vote to be ignored"
+
+        qc_insufficient = aggregate_qc(votes[1:2], committee, 3)
+        insufficient_pass = qc_insufficient === nothing
+        insufficient_detail = insufficient_pass ? "2 votes provided < threshold 3" : "Expected insufficient votes to return nothing"
+
+        conflicting_votes = AequChain.Types.PartialVote[
+            AequChain.Types.PartialVote(fill(UInt8(0x01), 32), committee.epoch, committee.id, committee.members[1], 1, fill(UInt8(1), 8)),
+            AequChain.Types.PartialVote(fill(UInt8(0x02), 32), committee.epoch, committee.id, committee.members[2], 2, fill(UInt8(2), 8))
+        ]
+        conflict_pass = false
+        conflict_detail = "Expected assertion when votes reference different block hashes"
+        try
+            aggregate_qc(conflicting_votes, committee, 2)
+            conflict_pass = false
+            conflict_detail = "Aggregation should reject conflicting block hashes"
+        catch e
+            conflict_pass = isa(e, AssertionError)
+            conflict_detail = conflict_pass ? "Assertion triggered as expected for mismatched hashes" : string(e)
+        end
+
+        results = [
+            ("Deterministic committee selection", deterministic_pass, deterministic_detail),
+            ("Small validator pools", small_pass, small_detail),
+            ("Threshold aggregation", qc_pass, qc_detail),
+            ("Duplicate votes ignored", duplicate_pass, duplicate_detail),
+            ("Insufficient votes rejected", insufficient_pass, insufficient_detail),
+            ("Conflicting hashes blocked", conflict_pass, conflict_detail)
+        ]
+
+        all_passed = all(r -> r[2], results)
+        render_section("CONSENSUS SELF-TEST") do
+            for (label, passed, detail) in results
+                print_metric_line(label, passed ? "✅ pass" : "❌ fail"; subtle=!passed)
+                if !isempty(detail)
+                    println("  $(GREY)$(detail)$(RESET)")
+                end
+                println()
+            end
+            summary = all_passed ? "All consensus checks passed" : "Some consensus checks failed"
+            print_metric_line("Summary", summary; subtle=!all_passed)
+        end
+        set_feedback(all_passed ? "Consensus primitives validated" : "Consensus self-test found issues")
+        render_footer()
+    catch e
+        println("❌ Error: ", e)
+        set_feedback("consensus_test failed: $(string(e))")
+        render_footer()
+    end
+end
+
 # Enhanced CLI Main Loop
 # ============================================================================
 function run_minimal_cli()
@@ -2046,6 +2128,9 @@ function run_minimal_cli()
                 display_welcome(false)
             elseif cmd == "node_qc"
                 handle_node_quorum(parts)
+                display_welcome(false)
+            elseif cmd == "consensus_test"
+                handle_consensus_test(parts)
                 display_welcome(false)
             else
                 clear_screen()

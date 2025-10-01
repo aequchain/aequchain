@@ -1,7 +1,7 @@
 using Test
 
-include("../src/AequChain.jl")
-using .AequChain
+include(joinpath(@__DIR__, "..", "src", "AequChain.jl"))
+using .AequChain: NodeConfig, InMemoryNode, register_account!, submit_payment!, get_account_balance, list_blocks, hash_block
 
 @testset "Testnet in-memory node payments" begin
     node = InMemoryNode(NodeConfig(committee_size=4, threshold=2))
