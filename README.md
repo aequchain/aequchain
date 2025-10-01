@@ -221,7 +221,23 @@ node_status               # shows latency, throughput, and memory headroom
 
     This deterministic self-test exercises committee selection, quorum aggregation, duplicate vote handling, insufficient vote rejection, and conflicting-hash detection, printing a ✅/❌ summary while keeping the environment entirely ephemeral.
 
+- Need to confirm the treasury equality invariants? Inside the CLI run:
+
+    ```text
+    equality_check
+    ```
+
+    The command inspects the live in-memory ledger and validates that treasury math, member registries, network memberships, 30-day spending, and business/pledge references all respect the global equality contract.
+
 See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a complete step-by-step guide, troubleshooting tips, and advice on recording experiment metrics.
+
+### 🔁 Pre-push safety sweep
+
+1. `./bin/quickcheck.sh` — runs the deterministic hash, node, and consensus test suites in one pass.
+2. `consensus_test` — within the CLI, double-checks committee rotation and quorum aggregation behavior.
+3. `equality_check` — within the CLI, verifies equality invariants and reference integrity.
+
+> ℹ️ Continuous integration via hosted runners is intentionally omitted to avoid burning GitHub Actions minutes. The quickcheck script keeps the workflow fast, local, and free.
 
 ## **≡** Core Architecture
 

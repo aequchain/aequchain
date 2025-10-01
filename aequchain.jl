@@ -973,6 +973,7 @@ function help_content_paginated()
             println("  $(ACCENT)node_metrics [mem_gb]$(RESET)          $(BODY)- latency, throughput & memory report$(RESET)")
             println("  $(ACCENT)node_blocks [n]$(RESET)                $(BODY)- inspect latest canonical blocks$(RESET)")
             println("  $(ACCENT)node_qc [n]$(RESET)                    $(BODY)- show recent quorum certificates$(RESET)")
+            println("  $(ACCENT)equality_check$(RESET)                $(BODY)- verify treasury equality invariants$(RESET)")
             println("  $(ACCENT)consensus_test$(RESET)                 $(BODY)- run deterministic consensus self-test$(RESET)")
             println("  $(ACCENT)node_reset$(RESET)                     $(BODY)- clear node state$(RESET)")
         end,
@@ -1055,6 +1056,7 @@ function help_content()
     println("  $(ACCENT)node_metrics [mem_gb]$(RESET)          $(BODY)- latency, throughput & memory report$(RESET)")
     println("  $(ACCENT)node_blocks [n]$(RESET)                $(BODY)- inspect latest canonical blocks$(RESET)")
     println("  $(ACCENT)node_qc [n]$(RESET)                    $(BODY)- show recent quorum certificates$(RESET)")
+    println("  $(ACCENT)equality_check$(RESET)                $(BODY)- verify treasury equality invariants$(RESET)")
     println("  $(ACCENT)consensus_test$(RESET)                 $(BODY)- run deterministic consensus self-test$(RESET)")
     println("  $(ACCENT)node_reset$(RESET)                     $(BODY)- clear node state$(RESET)")
 
@@ -1992,6 +1994,134 @@ function handle_consensus_test(_args::Vector{String})
     end
 end
 
+function gather_equality_results()
+    treasury = get_treasury_value()
+    member_ids = sort(collect(keys(BLOCKCHAIN.member_coins)))
+    member_count = length(member_ids)
+    cached_share = get_member_coin_value()
+    expected_share = member_count == 0 ? 0//1 : treasury // member_count
+
+    treasury_match = member_count == 0 ? (treasury == 0//1 && cached_share == 0//1) : (cached_share == expected_share && cached_share * member_count == treasury)
+    treasury_detail = member_count == 0 ? string("no members registered | treasury=", treasury) :
+        string("share=", cached_share, " × members=", member_count, " → treasury=", cached_share * member_count)
+
+    member_set = Set(collect(keys(BLOCKCHAIN.members)))
+    coin_set = Set(member_ids)
+    missing_members = sort(collect(setdiff(coin_set, member_set)))
+    missing_coins = sort(collect(setdiff(member_set, coin_set)))
+    registry_pass = isempty(missing_members) && isempty(missing_coins)
+    registry_detail = registry_pass ? string(member_count, " members synchronized across registries") : begin
+        parts = String[]
+        if !isempty(missing_members)
+            push!(parts, string("coins without member record: ", join(missing_members, ", ")))
+        end
+        if !isempty(missing_coins)
+            push!(parts, string("members without coin: ", join(missing_coins, ", ")))
+        end
+        join(parts, " | ")
+    end
+
+    network_issues = String[]
+    for net in values(BLOCKCHAIN.networks)
+        invalid_members = sort([m for m in net.members if !haskey(BLOCKCHAIN.members, m)])
+        if !isempty(invalid_members)
+            push!(network_issues, string(net.name, ": ", join(invalid_members, ", ")))
+        end
+    end
+    network_pass = isempty(network_issues)
+    network_detail = isempty(BLOCKCHAIN.networks) ? "no networks configured" :
+        (network_pass ? string(length(BLOCKCHAIN.networks), " networks reference registered members") : join(network_issues, " | "))
+
+    overspenders = member_count == 0 ? Tuple{String,Rational{BigInt}}[] :
+        [(id, member.total_30_day_spend) for (id, member) in BLOCKCHAIN.members if member.total_30_day_spend > cached_share]
+    spend_pass = isempty(overspenders)
+    spend_detail = member_count == 0 ? "no members to evaluate" :
+        (spend_pass ? "all members within 30-day allowance" : begin
+            preview = [string(id, " spent ", spent, " > share ", cached_share) for (id, spent) in overspenders[1:min(end, 3)]]
+            suffix = length(overspenders) > 3 ? " …" : ""
+            string(join(preview, " | "), suffix)
+        end)
+
+    economic_issues = String[]
+    for business in values(BLOCKCHAIN.businesses)
+        if !haskey(BLOCKCHAIN.members, business.owner)
+            push!(economic_issues, string("business ", business.name, " missing owner ", business.owner))
+        end
+        unknown_employees = sort([emp for emp in business.employees if !haskey(BLOCKCHAIN.members, emp)])
+        if !isempty(unknown_employees)
+            push!(economic_issues, string("business ", business.name, " missing employees ", join(unknown_employees, ", ")))
+        end
+        if business.alloc_budget > business.allocation_cap
+            push!(economic_issues, string("business ", business.name, " allocation ", business.alloc_budget, " exceeds cap ", business.allocation_cap))
+        end
+    end
+    for pledge in values(BLOCKCHAIN.pledges)
+        invalid_supporters = sort([sid for sid in keys(pledge.supporters) if !haskey(BLOCKCHAIN.members, sid) && !haskey(BLOCKCHAIN.businesses, sid)])
+        if !isempty(invalid_supporters)
+            push!(economic_issues, string("pledge ", pledge.name, " has unknown supporters ", join(invalid_supporters, ", ")))
+        end
+        if pledge.current > pledge.target && !pledge.completed
+            push!(economic_issues, string("pledge ", pledge.name, " exceeded target without completion flag"))
+        end
+    end
+    economic_pass = isempty(economic_issues)
+    econ_detail = economic_pass ? string(length(BLOCKCHAIN.businesses), " businesses & ", length(BLOCKCHAIN.pledges), " pledges consistent") :
+        begin
+            preview = economic_issues[1:min(end, 3)]
+            suffix = length(economic_issues) > 3 ? " …" : ""
+            string(join(preview, " | "), suffix)
+        end
+
+    return [
+        ("Treasury equals equal share", treasury_match, treasury_detail),
+        ("Member registries aligned", registry_pass, registry_detail),
+        ("Network membership valid", network_pass, network_detail),
+        ("30-day spend within share", spend_pass, spend_detail),
+        ("Economic references anchored", economic_pass, econ_detail)
+    ]
+end
+
+function render_equality_report(results; interactive::Bool=true)
+    all_passed = all(r -> r[2], results)
+    if interactive
+        render_section("EQUALITY SELF-TEST") do
+            for (label, passed, detail) in results
+                print_metric_line(label, passed ? "✅ pass" : "❌ fail"; subtle=!passed)
+                if !isempty(detail)
+                    println("  $(GREY)$(detail)$(RESET)")
+                end
+                println()
+            end
+            summary = all_passed ? "All equality invariants hold" : "Equality invariants require attention"
+            print_metric_line("Summary", summary; subtle=!all_passed)
+        end
+    else
+        println("=== EQUALITY SELF-TEST ===")
+        for (label, passed, detail) in results
+            status = passed ? "PASS" : "FAIL"
+            println("[$(status)] $(label)")
+            if !isempty(detail)
+                println("    $(detail)")
+            end
+        end
+        println(all_passed ? "All equality invariants hold." : "Equality invariants require attention.")
+    end
+    return all_passed
+end
+
+function handle_equality_check(_args::Vector{String})
+    try
+        results = gather_equality_results()
+        all_passed = render_equality_report(results; interactive=true)
+        set_feedback(all_passed ? "Equality invariants validated" : "Equality check found issues")
+        render_footer()
+    catch e
+        println("❌ Error: ", e)
+        set_feedback("equality_check failed: $(string(e))")
+        render_footer()
+    end
+end
+
 # Enhanced CLI Main Loop
 # ============================================================================
 function run_minimal_cli()
@@ -2128,6 +2258,9 @@ function run_minimal_cli()
                 display_welcome(false)
             elseif cmd == "node_qc"
                 handle_node_quorum(parts)
+                display_welcome(false)
+            elseif cmd == "equality_check"
+                handle_equality_check(parts)
                 display_welcome(false)
             elseif cmd == "consensus_test"
                 handle_consensus_test(parts)

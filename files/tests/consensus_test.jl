@@ -23,6 +23,31 @@ end
     @test all(idxmap[member] == position for (position, member) in enumerate(committee.members))
 end
 
+@testset "Committee rotation across epochs and sequences" begin
+    members = ["validator_$(i)" for i in 1:32]
+    epoch_committee_ids = String[]
+    for epoch in 1:5
+        committee, idx = AequChain.select_committee(members; committee_size=16, epoch=UInt64(epoch), account="seed", seq=UInt64(0))
+
+        @test length(committee.members) == 16
+    @test length(Set(committee.members)) == length(committee.members)
+        @test issubset(Set(committee.members), Set(members))
+
+        push!(epoch_committee_ids, committee.id)
+        for (member, position) in idx
+            @test committee.members[position] == member
+        end
+    end
+
+    @test length(unique(epoch_committee_ids)) == length(epoch_committee_ids)
+
+    base_committee, _ = AequChain.select_committee(members; committee_size=16, epoch=UInt64(1), account="seed", seq=UInt64(0))
+    for seq in 1:4
+        committee, _ = AequChain.select_committee(members; committee_size=16, epoch=UInt64(1), account="seed", seq=UInt64(seq))
+        @test committee.id != base_committee.id
+    end
+end
+
 @testset "Quorum certificate aggregation" begin
     members = ["v1", "v2", "v3", "v4"]
     committee = AequChain.Types.Committee(0, "cid", members)
@@ -56,4 +81,27 @@ end
         AequChain.Types.PartialVote(fill(UInt8(0x02), 32), committee.epoch, committee.id, members[2], 2, fill(UInt8(2), 8))
     ]
     @test_throws AssertionError AequChain.aggregate_qc(conflicting_votes, committee, 2)
+end
+
+@testset "Quorum aggregation boundary conditions" begin
+    members = ["v1", "v2", "v3", "v4"]
+    committee = AequChain.Types.Committee(1, "boundary", members)
+    block_hash = fill(UInt8(0x24), 32)
+
+    votes = AequChain.Types.PartialVote[
+        AequChain.Types.PartialVote(block_hash, committee.epoch, committee.id, members[i], i, fill(UInt8(0x10 + i), 8))
+        for i in 1:3
+    ]
+
+    qc_high_threshold = AequChain.aggregate_qc(votes, committee, 4)
+    @test qc_high_threshold === nothing
+
+    outsider_vote = AequChain.Types.PartialVote(block_hash, committee.epoch, committee.id, "outsider", length(committee.members) + 1, fill(UInt8(0xFF), 8))
+    zero_index_vote = AequChain.Types.PartialVote(block_hash, committee.epoch, committee.id, "zero", 0, fill(UInt8(0xEE), 8))
+    padded_votes = vcat(votes, [outsider_vote, zero_index_vote])
+
+    qc_with_padding = AequChain.aggregate_qc(padded_votes, committee, 3)
+    @test qc_with_padding !== nothing
+    @test sum(qc_with_padding.bitmap) == 3
+    @test qc_with_padding.agg_sig == reduce(vcat, (v.partial_sig for v in votes); init=UInt8[])
 end
