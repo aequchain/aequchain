@@ -3910,7 +3910,7 @@ THEREFORE:
    - Optimize only after verification
 
 4. ALWAYS think long-term
-   - Minimum operational horizon = longest possible outcoming results + most lives improved
+   - Minimum operational horizon = potential for longest possible outcoming results + most lives improved
    - Trillion+ member scale
    - Quantum-safe future (certain probabilities can achieve 100% whilst others can increase towards 100% infinite)
 
