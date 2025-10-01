@@ -15,6 +15,13 @@
 
 [should be fully audited, tested, and hardened *before put into production use*]
 
+> #### Testnet status (October 2025)
+> - There is **no public or hosted aequchain testnet** at present. Everything runs locally inside the demo CLI and the in-memory `node_*` commands.
+> - Launching `julia aequchain.jl cli` creates an ephemeral sandbox. Running `node_init`, `node_register`, `node_pay`, `consensus_test`, or `equality_check` operates entirely in memory and discards state on exit.
+> - All balances, coins, and certificates are simulation artifacts with **zero monetary value**. They exist for research and education only.
+> - Deploying beyond this demo requires jurisdiction-specific compliance (KYC/AML, licensing, taxation, consumer protection). Engage qualified legal counsel before operating any real network.
+> - Contributors must keep the repository in **DEMO_MODE** (see `GITHUB_AGENTS.md`) and avoid connecting it to persistent ledgers, customer data, or regulated financial flows until a full audit is complete.
+
 ## **≡**  Revolutionary Capabilities
 
 [should be security audited, have persistent storage, and undergo formal testing *before put into production use*]
