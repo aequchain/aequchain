@@ -2271,7 +2271,7 @@ function handle_equality_check(raw_args::Vector{String})
 
             interactive_session = interactive_tty || CLI_INTERACTIVE[]
 
-            if report_format == :plain && interactive_session
+            if (report_format == :plain || report_format == :json) && interactive_session
                 println()
                 println("Press Enter to continue...")
                 try
