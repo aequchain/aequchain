@@ -330,6 +330,21 @@ function get_treasury_value()
     return BLOCKCHAIN.treasury.stable_coins  # Already in peg currency!
 end
 
+"""
+Invalidate cached derived values when the treasury total changes.
+Call this after any mutation to BLOCKCHAIN.treasury.stable_coins so
+get_member_coin_value() will recompute and avoid stale results.
+"""
+function treasury_changed!()
+    # Force member value cache to be recomputed on next access
+    MEMBER_COIN_VALUE_CACHE[] = 0//1
+    # Keep MEMBER_COUNT_CACHE consistent (will be refreshed by get_member_coin_value)
+    MEMBER_COUNT_CACHE[] = length(BLOCKCHAIN.member_coins)
+    if VERBOSE[]
+        println("🔁 Treasury changed, invalidated MEMBER_COIN_VALUE_CACHE")
+    end
+end
+
 # Safety & Spending
 # ============================================================================
 function clean_spend_history(member_id::String)
@@ -381,6 +396,7 @@ function init_treasury(initial_funds::Float64, currency::String, peg_rate::Float
     funds_rat = money_to_rational(initial_funds)
     rate_rat = rate_to_rational(peg_rate)
     BLOCKCHAIN.treasury.stable_coins = funds_rat // rate_rat
+    treasury_changed!()
     BLOCKCHAIN.treasury.peg_currency = currency
     BLOCKCHAIN.treasury.peg_rate = rate_rat
     join_member(founder, initial_funds)
@@ -392,6 +408,7 @@ function join_member(id::String, deposit::Float64=0.0)
     dep_rat = money_to_rational(deposit)
     stable_deposit = dep_rat // BLOCKCHAIN.treasury.peg_rate
     BLOCKCHAIN.treasury.stable_coins += stable_deposit
+    treasury_changed!()
     BLOCKCHAIN.members[id] = Member(id)
     BLOCKCHAIN.member_coins[id] = MemberCoin(id)
     MEMBER_COUNT_CACHE[] = 0  # Invalidate cache
@@ -423,6 +440,7 @@ function exit_member(id::String)
     refund_stable = value
     refund = refund_stable * BLOCKCHAIN.treasury.peg_rate
     BLOCKCHAIN.treasury.stable_coins -= refund_stable
+    treasury_changed!()
     delete!(BLOCKCHAIN.member_coins, id)
     delete!(BLOCKCHAIN.members, id)
     MEMBER_COUNT_CACHE[] = 0  # Invalidate cache
@@ -450,6 +468,7 @@ function member_withdraw(member_id::String, amount::Float64, purpose::String)
         error("Insufficient treasury funds")
     end
     BLOCKCHAIN.treasury.stable_coins -= amt_rat
+    treasury_changed!()
     record_spend(member_id, amt_rat, "WITHDRAW")
     data = Dict(
         "member" => member_id,
@@ -684,6 +703,7 @@ function business_withdraw(bus_id::String, amount::Float64, purpose::String, act
     end
     validate_spend(actor, amt_rat, "BUSINESS_WITHDRAW")
     BLOCKCHAIN.treasury.stable_coins -= amt_rat
+    treasury_changed!()
     bus.alloc_budget -= amt_rat
     if bus.alloc_budget < 0//1
         bus.alloc_budget = 0//1
