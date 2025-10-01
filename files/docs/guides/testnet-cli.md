@@ -23,7 +23,7 @@ node_status
 ```
 
 - `consensus_test` exercises deterministic committee selection, quorum aggregation, duplicate vote handling, insufficient vote rejection, and conflicting-hash detection.
-- `equality_check` inspects the live in-memory ledger, confirming that the treasury share math, member registries, network memberships, 30-day spending limits, and business/pledge references all hold the equality invariant.
+- `equality_check` inspects the live in-memory ledger, confirming that the treasury share math, member registries, network memberships, 30-day spending limits, and business/pledge references all hold the equality invariant. Add `--format=json` for machine-readable output or combine with `--output equality.json` to persist the structured payload for audits.
 - `node_status` gives a quick snapshot of accounts, throughput, latency, and memory so you can confirm nothing unexpected shifted between runs.
 
 Press Enter after each report to return to the prompt.
