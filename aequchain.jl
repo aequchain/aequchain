@@ -44,6 +44,7 @@ License & Attribution
 const DEMO_MODE = true  # Safe for testing; no persistence
 # Global verbose flag. Set to `true` for interactive CLI, `false` for quiet simulations.
 const VERBOSE = Ref(false)
+const CLI_INTERACTIVE = Ref(false)
 
 # Deterministic time control (overridable by simulations)
 const TIME_PROVIDER = Ref{Function}(() -> Dates.now())
@@ -874,6 +875,8 @@ function display_welcome(first_run::Bool=true)
         print("$(WELCOME_HEX)$(ITALIC)type 'help' for options | 'example' for the walkthrough$(RESET)")
     end
 
+    # NOTE: keep welcome minimal. Tips live in the help panel instead.
+
     # After the hint, set user input color to grey and position cursor after the prompt
     print("$(GREY)")
     prompt_length = length(PROMPT_TEXT)
@@ -973,7 +976,10 @@ function help_content_paginated()
             println("  $(ACCENT)node_metrics [mem_gb]$(RESET)          $(BODY)- latency, throughput & memory report$(RESET)")
             println("  $(ACCENT)node_blocks [n]$(RESET)                $(BODY)- inspect latest canonical blocks$(RESET)")
             println("  $(ACCENT)node_qc [n]$(RESET)                    $(BODY)- show recent quorum certificates$(RESET)")
-            println("  $(ACCENT)equality_check$(RESET)                $(BODY)- verify treasury equality invariants$(RESET)")
+            println("  $(ACCENT)equality_check$(RESET) [--format <interactive|plain|json>] [--output <file>]")
+            println("                                       $(BODY)- verify treasury equality invariants$(RESET)")
+            println("                                       $(BODY)  (plain/json formats support automation)$(RESET)")
+            println("  $(GREY)Tip: Use 'equality_check --format=json' to produce a machine-readable report; add '--output <file>' to save it.$(RESET)")
             println("  $(ACCENT)consensus_test$(RESET)                 $(BODY)- run deterministic consensus self-test$(RESET)")
             println("  $(ACCENT)node_reset$(RESET)                     $(BODY)- clear node state$(RESET)")
         end,
@@ -1056,7 +1062,10 @@ function help_content()
     println("  $(ACCENT)node_metrics [mem_gb]$(RESET)          $(BODY)- latency, throughput & memory report$(RESET)")
     println("  $(ACCENT)node_blocks [n]$(RESET)                $(BODY)- inspect latest canonical blocks$(RESET)")
     println("  $(ACCENT)node_qc [n]$(RESET)                    $(BODY)- show recent quorum certificates$(RESET)")
-    println("  $(ACCENT)equality_check$(RESET)                $(BODY)- verify treasury equality invariants$(RESET)")
+    println("  $(ACCENT)equality_check$(RESET) [--format <interactive|plain|json>] [--output <file>]")
+    println("                                       $(BODY)- verify treasury equality invariants$(RESET)")
+    println("                                       $(BODY)  (plain/json formats support automation)$(RESET)")
+    println("  $(GREY)Tip: Use 'equality_check --format=json' to produce a machine-readable report; add '--output <file>' to save it.$(RESET)")
     println("  $(ACCENT)consensus_test$(RESET)                 $(BODY)- run deterministic consensus self-test$(RESET)")
     println("  $(ACCENT)node_reset$(RESET)                     $(BODY)- clear node state$(RESET)")
 
@@ -2081,9 +2090,32 @@ function gather_equality_results()
     ]
 end
 
-function render_equality_report(results; interactive::Bool=true)
+function build_equality_report_payload(results, all_passed::Bool)
+    return Dict(
+        "timestamp" => Dates.format(current_time(), ISO_FORMAT),
+        "ok" => all_passed,
+        "treasury" => string(get_treasury_value()),
+        "member_share" => string(get_member_coin_value()),
+        "member_count" => length(BLOCKCHAIN.member_coins),
+        "checks" => [
+            Dict(
+                "name" => label,
+                "ok" => passed,
+                "detail" => detail
+            ) for (label, passed, detail) in results
+        ]
+    )
+end
+
+function render_equality_report(results; interactive::Bool=true, format::Symbol=:auto, io::IO=stdout)
+    mode = format == :auto ? (interactive ? :interactive : :plain) : format
+    if !(mode in (:interactive, :plain, :json))
+        throw(ArgumentError("Unsupported equality report format: $(mode)"))
+    end
+
     all_passed = all(r -> r[2], results)
-    if interactive
+
+    if mode == :interactive
         render_section("EQUALITY SELF-TEST") do
             for (label, passed, detail) in results
                 print_metric_line(label, passed ? "✅ pass" : "❌ fail"; subtle=!passed)
@@ -2095,36 +2127,163 @@ function render_equality_report(results; interactive::Bool=true)
             summary = all_passed ? "All equality invariants hold" : "Equality invariants require attention"
             print_metric_line("Summary", summary; subtle=!all_passed)
         end
-    else
-        println("=== EQUALITY SELF-TEST ===")
+    elseif mode == :plain
+        println(io, "=== EQUALITY SELF-TEST ===")
         for (label, passed, detail) in results
             status = passed ? "PASS" : "FAIL"
-            println("[$(status)] $(label)")
+            println(io, "[$(status)] $(label)")
             if !isempty(detail)
-                println("    $(detail)")
+                println(io, "    $(detail)")
             end
         end
-        println(all_passed ? "All equality invariants hold." : "Equality invariants require attention.")
+        println(io, all_passed ? "All equality invariants hold." : "Equality invariants require attention.")
+    else # :json
+        payload = build_equality_report_payload(results, all_passed)
+        println(io, Canonical.canonical_json(payload))
     end
+
     return all_passed
 end
 
-function handle_equality_check(_args::Vector{String})
+function resolve_equality_format(token::AbstractString)::Symbol
+    fmt = lowercase(strip(token))
+    if fmt in ("interactive", "human", "ansi")
+        return :interactive
+    elseif fmt in ("plain", "text", "ascii")
+        return :plain
+    elseif fmt in ("json", "structured")
+        return :json
+    else
+        throw(ArgumentError("Unsupported equality report format: $(token)"))
+    end
+end
+
+function handle_equality_check(raw_args::Vector{String})
+    # Robust equality_check handler: parse options, render report to stdout
+    # and optionally write a machine-readable file. Errors are surfaced
+    # to stdout immediately so CLI users see them.
     try
+        report_format = :interactive
+        output_path::Union{Nothing,String} = nothing
+
+        args = raw_args[2:end]
+        idx = 1
+        while idx <= length(args)
+            arg = args[idx]
+            lower = lowercase(arg)
+            if isempty(arg)
+                idx += 1
+                continue
+            elseif startswith(lower, "--format=")
+                parts = split(arg, "=", limit=2)
+                value = length(parts) == 2 ? parts[2] : ""
+                if isempty(strip(value))
+                    throw(ArgumentError("Missing value for --format"))
+                end
+                report_format = resolve_equality_format(value)
+            elseif lower == "--format"
+                if idx == length(args)
+                    throw(ArgumentError("Missing value for --format"))
+                end
+                idx += 1
+                report_format = resolve_equality_format(args[idx])
+            elseif lower in ("--json", "json")
+                report_format = :json
+            elseif lower in ("--plain", "plain", "text")
+                report_format = :plain
+            elseif lower in ("--interactive", "interactive", "human")
+                report_format = :interactive
+            elseif startswith(lower, "--output=")
+                parts = split(arg, "=", limit=2)
+                val = length(parts) == 2 ? parts[2] : ""
+                output_path = isempty(strip(val)) ? nothing : strip(val)
+            elseif lower == "--output"
+                if idx == length(args)
+                    throw(ArgumentError("Missing value for --output"))
+                end
+                idx += 1
+                output_path = isempty(strip(args[idx])) ? nothing : strip(args[idx])
+            else
+                throw(ArgumentError("Unrecognized equality_check option: $(arg)"))
+            end
+            idx += 1
+        end
+
         results = gather_equality_results()
-        all_passed = render_equality_report(results; interactive=true)
-        set_feedback(all_passed ? "Equality invariants validated" : "Equality check found issues")
+
+        # First, if the caller requested a file output, attempt to write it.
+        if output_path !== nothing
+            try
+                open(output_path, "w") do io
+                    file_mode = report_format == :interactive ? :plain : report_format
+                    # Ensure the file is written with the machine-readable format when requested
+                    render_equality_report(results; interactive=false, format=file_mode, io=io)
+                end
+                println("Saved equality report to: $(output_path)")
+            catch e
+                # Surface the filesystem error clearly and continue to print to stdout
+                println("❌ Error writing report to '$(output_path)': $(e)")
+                set_feedback("Failed to write equality report to $(output_path)")
+            end
+        end
+
+        # Render to stdout according to the requested format (interactive triggers CLI UI)
+        if report_format == :interactive
+            all_passed = render_equality_report(results; interactive=true)
+        else
+            # For non-interactive formats write to stdout directly
+            all_passed = render_equality_report(results; interactive=false, format=report_format, io=stdout)
+
+            # If the user requested plain text and we're in an interactive TTY,
+            # pause with the same "Press Enter to continue" behaviour so the
+            # output isn't lost when the landing screen redraws.
+            # Detect interactive TTY robustly across Julia versions
+            interactive_tty = false
+            try
+                interactive_tty = isatty(STDIN)
+            catch
+                try
+                    interactive_tty = Base.isatty(STDIN)
+                catch
+                    interactive_tty = false
+                end
+            end
+
+            interactive_session = interactive_tty || CLI_INTERACTIVE[]
+
+            if report_format == :plain && interactive_session
+                println()
+                println("Press Enter to continue...")
+                try
+                    readline()
+                catch
+                    # ignore if input not available
+                end
+            end
+        end
+
+        # Informational feedback both in footer and immediate stdout
+        if output_path !== nothing
+            println(all_passed ? "Equality invariants validated (also saved to $(output_path))." : "Equality check found issues (also saved to $(output_path)).")
+            set_feedback(all_passed ? "Equality invariants validated (saved to $(output_path))" : "Equality check found issues (saved to $(output_path))")
+        else
+            set_feedback(all_passed ? "Equality invariants validated" : "Equality check found issues")
+        end
         render_footer()
+        return all_passed
     catch e
         println("❌ Error: ", e)
         set_feedback("equality_check failed: $(string(e))")
         render_footer()
+        return false
     end
 end
 
 # Enhanced CLI Main Loop
 # ============================================================================
 function run_minimal_cli()
+    # Mark CLI as interactive so command handlers can adapt behavior (pauses, prompts)
+    CLI_INTERACTIVE[] = true
     display_welcome(true)
     
     first_command_executed = false
@@ -2150,6 +2309,8 @@ function run_minimal_cli()
             if cmd == "exit"
                 clear_screen()
                 print_exit_banner()   # uses default message (edit print_exit_banner to change)
+                # Clear interactive flag before exiting
+                CLI_INTERACTIVE[] = false
                 break
             elseif cmd == "clear"
                 display_welcome(!first_command_executed)

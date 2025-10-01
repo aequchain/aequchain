@@ -22,6 +22,14 @@
 > - Deploying beyond this demo requires jurisdiction-specific compliance (KYC/AML, licensing, taxation, consumer protection). Engage qualified legal counsel before operating any real network.
 > - Contributors must keep the repository in **DEMO_MODE** (see `GITHUB_AGENTS.md`) and avoid connecting it to persistent ledgers, customer data, or regulated financial flows until a full audit is complete.
 
+## Notices
+
+- 2025-10-01: CLI behaviour: when running `equality_check --format plain` from the interactive
+    demo CLI (`julia aequchain.jl cli`) the report will now pause and prompt `Press Enter to continue...`
+    before returning to the landing screen. This aligns `equality_check` with the UX of other interactive
+    commands. Machine modes (`--format json` and `--output <file>`) remain non-blocking and suitable for
+    scripting and automation.
+
 ## **≡**  Revolutionary Capabilities
 
 [should be security audited, have persistent storage, and undergo formal testing *before put into production use*]
@@ -234,7 +242,7 @@ node_status               # shows latency, throughput, and memory headroom
     equality_check
     ```
 
-    The command inspects the live in-memory ledger and validates that treasury math, member registries, network memberships, 30-day spending, and business/pledge references all respect the global equality contract.
+    The command inspects the live in-memory ledger and validates that treasury math, member registries, network memberships, 30-day spending, and business/pledge references all respect the global equality contract. Add `--format=json` for machine-readable output, and combine with `--output equality-report.json` to archive the structured payload for compliance reviews.
 
 See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a complete step-by-step guide, troubleshooting tips, and advice on recording experiment metrics.
 
@@ -242,7 +250,7 @@ See [`files/docs/guides/testnet-cli.md`](files/docs/guides/testnet-cli.md) for a
 
 1. `./bin/quickcheck.sh` — runs the deterministic hash, node, and consensus test suites in one pass.
 2. `consensus_test` — within the CLI, double-checks committee rotation and quorum aggregation behavior.
-3. `equality_check` — within the CLI, verifies equality invariants and reference integrity.
+3. `equality_check [--format json] [--output <file>]` — within the CLI, verifies equality invariants and reference integrity; the optional flags let you stream JSON for automation or persist an audit record locally.
 
 > ℹ️ Continuous integration via hosted runners is intentionally omitted to avoid burning GitHub Actions minutes. The quickcheck script keeps the workflow fast, local, and free.
 
