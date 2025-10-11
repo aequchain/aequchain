@@ -92,7 +92,7 @@ This is the mechanism that enables businesses to provide free and low-cost goods
 
 *   **How It Works:** Every person who chooses to work with a business makes one small, voluntary contribution from their monthly share—a tiny percentage. This collective contribution creates one operational fund for that business.
 *   **The Result:** Because the business now has this operational fund, it does not need to charge for its products or services when selling to other network members. The products it makes from locally sourced materials can be provided for free. Items with some imported parts are sold only at the cost of those parts.
-*   **The Benefit for Business:** When the business sells products outside the network to traditional economies, it generates 100% profit. This profit returns to the national shared fund, increasing everyone's next monthly share and fueling economic growth. This creates one cycle of internal free access and external prosperity.
+*   **The Benefit for Business:** When the business sells products outside the network to traditional economies, it generates 100% profit. This profit returns to the national shared fund, increasing everyone's next monthly share and fueling economic growth. This creates one cycle of internal free access and their external prosperity.
 
 **3. Community Pledges: Fueling New Ideas and Growth**
 
