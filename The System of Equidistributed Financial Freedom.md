@@ -71,7 +71,7 @@ Imagine waking up knowing your share is secure. You check the mobile app, findin
 
 **9. The Future: Global Connection and Endless Possibility**
 
-As more nations join this system, the network expands. One country provides free agriculture, another free technology, another free manufacturing. Import costs disappear between member nations. The vision is one global community where all basic needs are met for every person, fostering unprecedented collaboration, space exploration, medical advancement, and cultural growth.
+As more nations join this system, the network expands. Countries provide free agriculture, others free technology, others free manufacturing. Import costs disappear between member nations. The vision is one global community where all basic needs are met for every person, fostering unprecedented collaboration, space exploration, medical advancement, and cultural growth.
 
 ***
 
