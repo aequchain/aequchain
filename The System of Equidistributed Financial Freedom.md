@@ -67,7 +67,7 @@ The system includes one debit-type card linking your digital holdings to the phy
 
 **8. A Day in the Life with This System**
 
-Imagine waking up knowing your share is secure. You check the mobile app, finding free local produce delivered to your door. You use the app’s map to find one new local cafe for breakfast, using your debit-type card for one coffee that costs almost nothing. You then log into free online courses to study one new skill, perhaps for one project you saw on the job listings. Later, you might contribute to one community pledge, investing less than the price of one snack to help start one new business that will provide free solar panels for the whole community. Your day is filled with opportunity, collaboration, and security.
+Imagine waking up knowing your share is secure. You check the mobile app, finding free local produce delivered to your door. You use the app’s map to find new local cafes for breakfast, using your debit-type card for coffee that costs almost nothing. You then log into free online courses to study new proficiencies, perhaps for one project you saw on the job listings. Later, you might contribute to one community pledge, investing less than the price of snacks to help start new business that will provide free solar panels for the whole community. Your day is filled with opportunity, collaboration, and security.
 
 **9. The Future: Global Connection and Endless Possibility**
 
