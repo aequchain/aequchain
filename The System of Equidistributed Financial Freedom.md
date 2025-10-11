@@ -14,6 +14,8 @@ This system facilitates, from the smallest scale to the entire globe, the civil 
 
 This system enhances every developing area of current economic frameworks. It functions swiftly, effortlessly, and organically through simple, safe mechanisms. Approach remains fully comprehensible while coexisting and operating within existing structures, achieving maximum feasible integration at this time.
 
+In possibly every area of existing "current traditional" financial economy that requires upliftment or is under developed, this system facilitates the correction of that, swiftly, and effortlessly, organically, simplistically and intendibly safely, whilst still being able to coexist with, internally-manage and navigate it, as conceivably possible at time of writing.
+
 
 **2. How Does It Work? The Simple Mechanics**
 
