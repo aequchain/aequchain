@@ -98,7 +98,7 @@ This is the mechanism that enables businesses to provide free and low-cost goods
 
 This mechanism allows the entire community to easily fund new projects, startups, and expansions.
 
-*   **How It Works:** Any member or business can present one new idea to the network through the mobile app—like starting one new factory, researching new technology, building community infrastructure or additional operational funding. They set one total amount needed for the project.
+*   **How It Works:** Any member or business can present new ideas to the network through the mobile app—like starting new factories, researching new technologies, building community infrastructure or additional operational funding. They set total amounts needed for the project.
 *   **Community Support:** Every member of the network can choose to support the idea by pledging a tiny, almost unnoticeable amount from their monthly share. Because the entire network contributes, even a very small amount from each person quickly adds up to the full amount needed.
 *   **The Power of Many:** This means large, important projects that benefit everyone can start quickly and easily, without needing large banks or investors. The community directly decides and funds what it wants to see grow, ensuring the network always meets its own needs and desires.
 
