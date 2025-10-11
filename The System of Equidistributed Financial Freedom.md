@@ -17,7 +17,7 @@ This system enhances every developing area of current economic frameworks. It fu
 
 **2. How Does It Work? The Simple Mechanics**
 
-*   **One Shared Fund:** Every business and person in the network contributes one small percentage of their monthly share into one shared smart contract on the **aequchain**.
+*   **One Shared Fund:** Every business and person in the network contributes one small percentage of their monthly share into one shared smart contract on the **aequchain** or similar.
 *   **One Equal Share:** The total resources in this shared fund divide equally every month among all members. Every person receives the same amount.
 *   **Zero-Cost Transactions:** The **aequchain** or similar technology has zero transaction fees, so moving resources costs nothing.
 *   **Total Transparency:** Everyone can see the smart contract and all transactions, ensuring complete honesty and trust.
