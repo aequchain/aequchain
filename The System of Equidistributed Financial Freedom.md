@@ -44,7 +44,7 @@ The system includes one debit-type card linking your digital holdings to the phy
 **5. What Changes for People and Daily Life?**
 
 *   **No More Worry About Needs:** Every person receives one reliable share, every month. This security eliminates stress about basic needs like food, housing, and healthcare.
-*   **Access, Not Cost:** Products and services made entirely within the network become free. Items with imported parts cost only the price of those parts. This means most things in daily life become very affordable or free.
+*   **Access, Not Cost:** Products and services made entirely within the network become free. No costs, no overheads, AND no need to transfer amounts on a feeless blockchain - equidistribution of all finance ensures member balances rebalance unchanged. FREE. Items with imported parts cost only the price of those parts. This means most things in daily life become very affordable or free.
 *   **Work Becomes Passion:** People pursue work they love and find meaningful, not just jobs for survival. This leads to greater happiness and innovation.
 *   **Thriving Communities:** With stress about resources removed, communities become more harmonious, collaborative, and supportive.
 
