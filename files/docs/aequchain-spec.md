@@ -1,4 +1,4 @@
-# AequChain Protocol v0.1 (Nano-class, Equality-Preserving)
+# aequchain Protocol v0.1 (Nano-class, Equality-Preserving)
 
 Goals
 - Near-real-time end-to-end confirmations at all scales.

@@ -30,3 +30,23 @@ JuliaLocalPreferences.toml
 # Local testing artifacts
 clone/
 equality_out*.json
+
+# Testnet Demo - Build and Runtime
+aequchain_testnet_dapp/build/
+aequchain_testnet_dapp/.dart_tool/
+*.log
+nohup.out
+/tmp/
+
+# Status Documents (working notes - optional to commit)
+COMPLETION-SUMMARY.md
+CURRENT-STATUS.md
+ENHANCED-TESTNET-FEATURES.md
+ERRORS-RESOLVED.md
+FLUTTER-DAPP-CREATED.md
+FULL-SERVER-RESET.md
+IMPLEMENTATION-PLAN-COMPLETE.md
+OPERABILITY-STATUS.md
+SUCCESS-SUMMARY.md
+TEST-GUIDE.md
+QUICK-START.md

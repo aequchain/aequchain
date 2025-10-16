@@ -1,4 +1,4 @@
-# AequChain Roadmap (v0.1 → v0.3)
+# aequchain Roadmap (v0.1 → v0.3)
 
 Milestone M0: Skeleton + Local Fast Path
 - Types: blocks (send/receive), votes, QC, basic state trie, account model.

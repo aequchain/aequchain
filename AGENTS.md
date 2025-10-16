@@ -3484,7 +3484,7 @@ end
 
 ```julia
 """
-AEQUCHAIN PROJECT STRUCTURE:
+aequchain PROJECT STRUCTURE:
 
 aequchain/
 ├── src/
@@ -3880,7 +3880,7 @@ end
 ```julia
 """
 ═══════════════════════════════════════════════════════════════════════
-                    THE AEQUCHAIN SACRED COVENANT
+                    THE aequchain SACRED COVENANT
 ═══════════════════════════════════════════════════════════════════════
 
 You are the guardian of equality in code.

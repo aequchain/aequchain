@@ -1,4 +1,4 @@
-# AequChain Wire Formats (v0.1)
+# aequchain Wire Formats (v0.1)
 
 All messages are JSON for v0.1 (to ease debugging). Later: protobuf for efficiency.
 All binary fields are base64url-encoded strings.

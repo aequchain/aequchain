@@ -1,0 +1,77 @@
+[api]
+host = "127.0.0.1"
+port = 3000
+cors_enabled = true
+cors_origins = ["http://localhost:8080", "http://localhost:3001"]
+rate_limit_per_minute = 89  # Fibonacci - global rate limit
+demo_mode = true  # MUST be true for testnet
+require_https = false  # Set true for production
+
+[api.security]
+# Security headers
+enable_security_headers = true
+content_security_policy = "default-src 'self'"
+x_frame_options = "DENY"
+x_content_type_options = "nosniff"
+strict_transport_security = "max-age=31536000"
+custom_demo_header = true  # Adds X-Demo-Mode: true header
+
+[api.rate_limiting]
+# Rate limiting strategy
+strategy = "identity_tier"  # "global", "identity_tier", or "ip"
+burst_allowance = 5  # Fibonacci - allow short bursts
+window_size_seconds = 60
+cleanup_interval_seconds = 377  # Fibonacci
+
+[api.endpoints]
+# Enable/disable specific endpoints
+enable_account_creation = true
+enable_transactions = true
+enable_pledges = true
+enable_jobs = true
+enable_enterprises = true
+enable_content = true
+enable_identity = true
+enable_equality_check = true
+
+[api.validation]
+# Input validation limits (Fibonacci where applicable)
+max_name_length = 100
+max_description_length = 1000
+max_memo_length = 233  # Fibonacci
+max_tags_per_content = 13  # Fibonacci
+max_skills_per_job = 21  # Fibonacci
+min_pledge_amount = 1.0
+max_pledge_amount = 1000000.0
+
+[api.websocket]
+port = 3001
+heartbeat_interval_ms = 5000  # Fibonacci
+max_connections = 144  # Fibonacci
+connection_timeout_seconds = 89  # Fibonacci
+enable_compression = true
+
+[api.websocket.events]
+# Which events to broadcast
+broadcast_new_transactions = true
+broadcast_new_pledges = true
+broadcast_new_jobs = true
+broadcast_network_changes = true
+broadcast_equality_updates = true
+
+[api.demo]
+# Demo mode specific settings
+show_demo_banner = true
+demo_disclaimer_required = true
+simulate_delays = false  # Simulate network delays for realism
+max_demo_accounts = 987  # Fibonacci - limit demo accounts
+auto_cleanup_interval_minutes = 55  # Fibonacci - clean stale sessions
+session_timeout_minutes = 89  # Fibonacci
+
+[api.logging]
+# Logging configuration
+log_level = "info"  # "debug", "info", "warn", "error"
+log_requests = true
+log_errors = true
+log_slow_queries_ms = 100
+anonymize_logs = true  # Remove PII from logs

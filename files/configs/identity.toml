@@ -1,0 +1,60 @@
+[identity.tiers]
+# Tier 0: Anonymous/Outlier - minimal barriers to entry
+tier0_vouch_minimum = 3  # Fibonacci - minimum vouches needed
+tier0_vouch_strength = 2.0  # Total strength required (allows flexible combinations)
+tier0_requests_per_minute = 21  # Fibonacci
+tier0_requests_per_day = 233  # Fibonacci
+tier0_treasury_percentage_limit = 0.001  # 0.1% of treasury per 30 days
+tier0_content_upload_mb_per_day = 5  # Fibonacci
+
+# Tier 1: Documented - verified identity
+tier1_document_types = ["national_id", "passport", "drivers_license"]
+tier1_min_documents = 1  # At least one valid document required
+tier1_requests_per_minute = 89  # Fibonacci
+tier1_requests_per_day = 987  # Fibonacci
+tier1_treasury_percentage_limit = 0.01  # 1% of treasury per 30 days
+tier1_content_upload_mb_per_day = 34  # Fibonacci
+tier1_biometric_binding_optional = true
+
+# Tier 2: Business - registered entity
+tier2_business_documents = ["business_registration", "tax_id"]
+tier2_license_required = true
+tier2_requests_per_minute = 233  # Fibonacci
+tier2_requests_per_day = 2584  # Fibonacci
+tier2_treasury_percentage_limit = 0.05  # 5% of treasury per 30 days
+tier2_content_upload_mb_per_day = 144  # Fibonacci
+tier2_contribution_rate_max = 0.05  # Maximum 5% contribution rate
+
+[identity.vouching]
+max_vouches_per_day = 3  # Fibonacci - how many times you can vouch per day
+vouch_reputation_decay_days = 377  # Fibonacci - how long vouches remain effective
+min_voucher_reputation = 0.5  # Minimum reputation score to vouch
+tier1_vouch_strength = 0.8  # Tier 1 members vouch with this strength
+tier2_vouch_strength = 1.0  # Tier 2 (businesses) vouch with full strength
+
+[identity.documents]
+# Document hash algorithm
+hash_algorithm = "SHA3-512"
+
+# Document expiry grace period (days)
+expiry_grace_period_days = 13  # Fibonacci - warning period before expiry
+
+# Supported document types
+supported_personal_docs = ["national_id", "passport", "drivers_license", "birth_certificate", "residency_permit"]
+supported_business_docs = ["business_registration", "tax_id", "articles_of_incorporation", "partnership_agreement"]
+supported_licenses = ["operating_license", "health_permit", "professional_license", "trade_license", "service_license"]
+
+[identity.biometric]
+# Biometric binding (all processing device-local)
+enable_biometric_binding = true
+double_hash_commitment = true  # Store hash(hash(template)) for privacy
+binding_renewal_days = 89  # Fibonacci - how often to reverify
+device_binding_required = true  # Must bind to specific device
+
+[identity.jurisdictions]
+# Jurisdiction-specific configurations
+default_jurisdiction = "DEMO"
+require_jurisdiction_declaration = true
+
+# Per-jurisdiction settings can be added here
+# e.g., [identity.jurisdictions.US], [identity.jurisdictions.EU], etc.

@@ -17,9 +17,24 @@ https://equied.zapier.app
 
 [should be fully audited, tested, and hardened *before put into production use*]
 
+## 🎮 Try the Interactive Demo
+
+**NEW**: Web-based testnet demo with live dashboard!
+
+```bash
+cd aequchain
+./bin/start-demo.sh
+```
+
+This launches:
+- **API Server** (http://localhost:3000) - RESTful blockchain endpoints
+- **Flutter Web App** (http://localhost:43255) - Interactive UI with live accounts dashboard
+
+See [TESTNET-DEMO-README.md](TESTNET-DEMO-README.md) for complete demo documentation.
+
 > #### Testnet status (October 2025)
-> - There is **no public or hosted aequchain testnet** at present. Everything runs locally inside the demo CLI and the in-memory `node_*` commands.
-> - Launching `julia aequchain.jl cli` creates an ephemeral sandbox. Running `node_init`, `node_register`, `node_pay`, `consensus_test`, or `equality_check` operates entirely in memory and discards state on exit.
+> - There is **no public or hosted aequchain testnet** at present. Everything runs locally in ephemeral memory.
+> - The web demo (`./bin/start-demo.sh`) and CLI (`julia aequchain.jl cli`) both create safe sandboxes that discard state on exit.
 > - All balances, coins, and certificates are simulation artifacts with **zero monetary value**. They exist for research and education only.
 > - Deploying beyond this demo requires jurisdiction-specific compliance (KYC/AML, licensing, taxation, consumer protection). Engage qualified legal counsel before operating any real network.
 > - Contributors must keep the repository in **DEMO_MODE** (see `GITHUB_AGENTS.md`) and avoid connecting it to persistent ledgers, customer data, or regulated financial flows until a full audit is complete.
