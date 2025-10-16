@@ -1,0 +1,14 @@
+[network]
+id = "aequchain-testnet"
+gossip_peers = 12
+
+[consensus]
+committee_size = 32
+threshold = 22
+epoch_duration_secs = 3600
+
+[anti_spam]
+rate_capacity = 5.0
+rate_per_sec = 1.0
+pow_enabled = false
+pow_target_ms = 100
