@@ -54,20 +54,24 @@ using .ContentServer
 include("files/src/network/APIServer.jl")
 using .APIServer
 
+# Get port and host from environment variables (for cloud deployment)
+port = parse(Int, get(ENV, "PORT", "3000"))
+host = get(ENV, "HOST", "0.0.0.0")  # Use 0.0.0.0 for cloud deployment
+
 println("=" ^ 60)
 println("🚀 AEQU CHAIN TESTNET API SERVER")
 println("=" ^ 60)
 println("")
 println("⚠️  DEMO MODE - NO REAL VALUE - EPHEMERAL ONLY")
 println("")
-println("Starting server on http://localhost:3000")
+println("Starting server on http://$host:$port")
 println("Press Ctrl+C to stop")
 println("")
 println("=" ^ 60)
 println("")
 
 try
-    APIServer.start_server(host="127.0.0.1", port=3000)
+    APIServer.start_server(host=host, port=port)
 catch e
     if isa(e, InterruptException)
         println("\n\n✅ Server stopped gracefully")

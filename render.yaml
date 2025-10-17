@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: aequchain-testnet-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: JULIA_NUM_THREADS
+        value: auto
+    healthCheckPath: /api/health
