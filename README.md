@@ -12,6 +12,7 @@
 https://equied.zapier.app
 
 facebook resources:
+
 https://www.facebook.com/profile.php?id=61565944664746
 
 **aequchain** is a revelation in the implementation of a **Universal Equidistributed Blockchain** that enables multiple nations, multiple business networks, and their own currencies to coexist on a single blockchain while maintaining **100% financial equality** for every member. It scales from local cooperatives to full global currency coverage, all while keeping participation free for real people. The project deliberately steers communities toward a **living-for-free reality**—see [`files/docs/vision/free-living.md`](files/docs/vision/free-living.md) for the technical pathway from equality to complete freedom from monetary dependence.
